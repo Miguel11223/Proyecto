@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Personajes Anime</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .container {
+            width: 90%;
+            margin: 20px auto;
+        }
+
+        form, .personajes {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="file"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #333;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #555;
+        }
+
+        .personajes-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+        }
+
+        .personaje {
+            background: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .personaje img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+
+        .personaje button {
+            background-color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Gestión de Personajes Anime</h1>
+</header>
+
+<div class="container">
+    <form id="formulario">
+        <div class="form-group">
+            <label for="nombre">Nombre del Personaje:</label>
+            <input type="text" id="nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+            <label for="anime">Anime:</label>
+            <input type="text" id="anime" name="anime" required>
+        </div>
+        <div class="form-group">
+            <label for="archivo">Imagen del Personaje:</label>
+            <input type="file" id="archivo" name="archivo" accept="image/*" required>
+        </div>
+        <button type="button" onclick="agregarPersonaje()">Agregar Personaje</button>
+    </form>
+
+    <div class="personajes">
+        <h2>Lista de Personajes</h2>
+        <div id="personajesGrid" class="personajes-grid">
+        </div>
+    </div>
+</div>
+
+<script>
+
+async function agregarPersonaje() {
+    const nombre = document.getElementById('nombre').value;
+    const anime = document.getElementById('anime').value;
+    const archivo = document.getElementById('archivo').files[0];
+
+    if (!nombre || !anime || !archivo) {
+        alert('Todos los campos son obligatorios.');
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('nombre', nombre);
+    formData.append('anime', anime);
+    formData.append('archivo', archivo);
+
+    try {
+        const response = await fetch('http://localhost:8080/formulario', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (response.ok) {
+            alert('Personaje agregado correctamente.');
+            cargarPersonajes(); // Recargar la lista de personajes
+        } else {
+            const errorData = await response.json();
+            alert(errorData.error || 'Error al agregar personaje.');
+        }
+    } catch (error) {
+        console.error('Error al agregar personaje:', error);
+        alert('Error al agregar personaje.');
+    }
+}
+
+// Función para cargar todos los personajes
+async function cargarPersonajes() {
+    try {
+        const response = await fetch('http://localhost:8080/personajes');
+        const personajes = await response.json();
+        const grid = document.getElementById('personajesGrid');
+        grid.innerHTML = ''; // Limpiar el grid antes de agregar los personajes
+
+        personajes.forEach(personaje => {
+            const div = document.createElement('div');
+            div.classList.add('personaje');
+
+            const img = document.createElement('img');
+            img.src = personaje.archivo;
+            div.appendChild(img);
+
+            const nombre = document.createElement('h3');
+            nombre.textContent = personaje.nombre;
+            div.appendChild(nombre);
+
+            const anime = document.createElement('p');
+            anime.textContent = `Anime: ${personaje.anime}`;
+            div.appendChild(anime);
+
+            const buttonPDF = document.createElement('button');
+            buttonPDF.textContent = 'Generar PDF';
+            buttonPDF.onclick = () => generarPDF(personaje.nombre);
+            div.appendChild(buttonPDF);
+
+            const buttonDelete = document.createElement('button');
+            buttonDelete.textContent = 'Eliminar';
+            buttonDelete.onclick = () => eliminarPersonaje(personaje.nombre);
+            div.appendChild(buttonDelete);
+
+            grid.appendChild(div);
+        });
+    } catch (error) {
+        console.error('Error al cargar personajes:', error);
+    }
+}
+
+// Función para eliminar un personaje
+async function eliminarPersonaje(nombre) {
+    try {
+        const response = await fetch(`http://localhost:8080/eliminar?nombre=${nombre}`, {
+            method: 'DELETE',
+        });
+
+        if (response.ok) {
+            alert('Personaje eliminado correctamente.');
+            cargarPersonajes(); // Recargar la lista de personajes
+        } else {
+            const errorData = await response.json();
+            alert(errorData.mensaje || 'Error al eliminar personaje.');
+        }
+    } catch (error) {
+        console.error('Error al eliminar personaje:', error);
+    }
+}
+
+// Función para generar el PDF
+async function generarPDF(nombre) {
+    try {
+        const response = await fetch(`http://localhost:8080/consulta-pdf?nombre=${nombre}`);
+
+        if (response.ok) {
+            const blob = await response.blob();
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `${nombre}-output.pdf`;
+            link.click();
+        } else {
+            const errorData = await response.json();
+            alert(errorData.error || 'Error al generar el PDF.');
+        }
+    } catch (error) {
+        console.error('Error al generar PDF:', error);
+    }
+}
+
+// Cargar los personajes al inicio
+window.onload = cargarPersonajes;
+</script>
+
+</body>
+</html>
+
