@@ -13,10 +13,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = mysql.createConnection({
-    host: 'localhost',
+    host: 'junction.proxy.rlwy.net',
     user: 'root',
     password: '',
-    database: 'anime_db',
+    database: 'railway',
 });
 
 db.connect((err) => {
