@@ -257,13 +257,13 @@ app.get('/consulta-pdf', async (req, res) => {
 
 app.post('/actualizar-personaje', upload.single('archivo'), (req, res) => {
     const { nombre, anime } = req.body;
-    const archivoNuevo = req.file ? req.file.path : null;  // Nuevo archivo si se subió uno
+    const archivoNuevo = req.file ? req.file.path : null;  
 
     if (!nombre || !anime) {
         return res.status(400).json({ mensaje: 'El nombre y el anime son obligatorios.' });
     }
 
-    // Si se subió un archivo nuevo, actualizamos el campo del archivo
+    
     let query = 'UPDATE animes SET nombre = ?, anime = ?';
     let queryParams = [nombre, anime];
 
@@ -273,8 +273,7 @@ app.post('/actualizar-personaje', upload.single('archivo'), (req, res) => {
     }
 
     query += ' WHERE nombre = ?';
-    queryParams.push(nombre);  // Suponiendo que se actualiza por nombre, pero esto puede cambiar a un id único
-
+    queryParams.push(nombre);  
     db.query(query, queryParams, (err, result) => {
         if (err) {
             console.error('Error al actualizar los datos en la base de datos:', err.message);
