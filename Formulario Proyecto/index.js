@@ -15,8 +15,10 @@ app.use(express.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'junction.proxy.rlwy.net',
     user: 'root',
-    password: '',
+    password: 'GvpeoGkDtGbWGjDchFcwVzMFznHkSpvl',
     database: 'railway',
+    port: 16571,
+
 });
 
 db.connect((err) => {
