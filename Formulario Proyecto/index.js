@@ -92,7 +92,9 @@ app.post('/formulario', upload.single('archivo'), validateForm, (req, res) => {
         console.error('Error al procesar el formulario:', error.message);
         res.status(500).send('Error al procesar el formulario.');
     }
-});
+}); 
+
+
 
 
 
@@ -104,7 +106,34 @@ app.get('/personajes', (req, res) => {
         if (err) {
             console.error('Error al obtener los datos:', err.message);
             return res.status(500).json({ mensaje: 'Error al obtener los datos.' });
+            
         }
+        results.forEach(personaje => {
+            // Leer la imagen y convertirla en base64
+            const imageData = fs.readFileSync(personaje.archivo, { encoding: 'base64' });
+            const extname = path.extname(personaje.archivo).toLowerCase();
+            let imageType = 'JPEG';
+            if (extname === '.png') {
+                imageType = 'PNG';
+            } else if (extname === '.gif') {
+                imageType = 'GIF';
+            }
+
+            personaje.archivo = `data:image/${imageType.toLowerCase()};base64,${imageData}`;
+        });
+        
+  /*      const imgf=results[0];
+        const imageData = fs.readFileSync(imgf.archivo, { encoding: 'base64' });
+                const extname = path.extname(imgf.archivo).toLowerCase();
+                let imageType = 'JPEG';               
+                if (extname === '.png') {
+                    imageType = 'PNG';
+                } else if (extname === '.gif') {
+                    imageType = 'GIF';
+                }
+
+                const imgData = `data:image/${imageType.toLowerCase()};base64,${imageData}`;
+                results[0].archivo=imgData; */
 
         res.status(200).json(results);
     });
@@ -131,8 +160,8 @@ app.delete('/eliminar', (req, res) => {
 
 
 app.get('/consulta-pdf', async (req, res) => {
-    const { nombre } = req.query;
-
+     const { nombre } = req.query; 
+  
     if (!nombre) {
         return res.status(400).json({ error: 'El parámetro "nombre" es obligatorio.' });
     }
@@ -152,9 +181,24 @@ app.get('/consulta-pdf', async (req, res) => {
             const data = results[0];
             const doc = new jsPDF();
 
-            doc.text(`Datos Consultados`, 10, 10);
-            doc.text(`Nombre: ${data.nombre}`, 10, 20);
-            doc.text(`Anime: ${data.anime}`, 10, 30);
+            doc.setFillColor(0, 123, 255); // Fondo azul
+            doc.rect(0, 0, 210, 20, 'F'); // Fondo para el título
+
+            doc.setTextColor(255, 255, 255); // Texto blanco
+            doc.setFontSize(16);
+            doc.setFont("helvetica", "normal");  // Establece la fuente helvetica y el estilo normal
+            doc.setFontSize(22);
+            doc.text('Datos del Personaje Anime', 15, 20);
+
+            doc.setTextColor(255, 0, 0);  // Rojo
+            doc.setFont("helvetica", "italic"); // Cursiva
+            doc.setFontSize(16);
+            doc.text(`Datos Consultados`, 20, 40);
+            doc.text(`Nombre: ${data.nombre}`, 20, 50);
+            doc.text(`Anime: ${data.anime}`, 20, 60);
+
+            doc.setLineWidth(0.5);
+            doc.line(20, 100, 190, 150);
 
             if (data.archivo) {
                 const imageData = fs.readFileSync(data.archivo, { encoding: 'base64' });
@@ -167,8 +211,13 @@ app.get('/consulta-pdf', async (req, res) => {
                 }
 
                 const imgData = `data:image/${imageType.toLowerCase()};base64,${imageData}`;
-                doc.addImage(imgData, imageType, 10, 40, 100, 100);
 
+                const imgWidth = 100; // Ancho de la imagen
+                const imgHeight = 100; // Altura de la imagen
+                const pageWidth = doc.internal.pageSize.width; // Ancho total de la página
+                const xPosition = (pageWidth - imgWidth) / 2;
+
+                doc.addImage(imgData, imageType, xPosition, 130, imgWidth, imgHeight);
 
             }
 
@@ -176,9 +225,12 @@ app.get('/consulta-pdf', async (req, res) => {
             if (!fs.existsSync(pdfFolder)) fs.mkdirSync(pdfFolder);
 
             const pdfPath = path.join(pdfFolder, `${data.nombre}-output.pdf`);
-            const pdfOutput = doc.output();
 
-            fs.writeFileSync(pdfPath, pdfOutput);
+ 
+            doc.save(pdfPath);
+           // const pdfOutput = doc.output();
+
+          //  fs.writeFileSync(pdfPath, pdfOutput);
 
             res.sendFile(pdfPath, (err) => {
                 if (err) {
@@ -197,11 +249,46 @@ app.get('/consulta-pdf', async (req, res) => {
             res.status(500).send('Error al generar el PDF.');
         }
     });
+}); 
+
+
+
+
+
+app.post('/actualizar-personaje', upload.single('archivo'), (req, res) => {
+    const { nombre, anime } = req.body;
+    const archivoNuevo = req.file ? req.file.path : null;  // Nuevo archivo si se subió uno
+
+    if (!nombre || !anime) {
+        return res.status(400).json({ mensaje: 'El nombre y el anime son obligatorios.' });
+    }
+
+    // Si se subió un archivo nuevo, actualizamos el campo del archivo
+    let query = 'UPDATE animes SET nombre = ?, anime = ?';
+    let queryParams = [nombre, anime];
+
+    if (archivoNuevo) {
+        query += ', archivo = ?';
+        queryParams.push(archivoNuevo);
+    }
+
+    query += ' WHERE nombre = ?';
+    queryParams.push(nombre);  // Suponiendo que se actualiza por nombre, pero esto puede cambiar a un id único
+
+    db.query(query, queryParams, (err, result) => {
+        if (err) {
+            console.error('Error al actualizar los datos en la base de datos:', err.message);
+            return res.status(500).json({ mensaje: 'Error al actualizar los datos.' });
+        }
+
+        res.status(200).json({ mensaje: 'Personaje actualizado correctamente.' });
+    });
 });
 
 
 
 
-app.listen(8080, () => {
-    console.log('Servidor corriendo en puerto 8080');
+
+app.listen(8081, () => {
+    console.log('Servidor corriendo en puerto 8081');
 });

@@ -77,7 +77,7 @@
 
         .personaje img {
             max-width: 100%;
-            height: auto;
+            height: 60%;
             border-radius: 8px;
         }
 
@@ -108,6 +108,7 @@
             <input type="file" id="archivo" name="archivo" accept="image/*" required>
         </div>
         <button type="button" onclick="agregarPersonaje()">Agregar Personaje</button>
+        <button type="button" onclick="actualizarPersonaje()">Actualizar</button>
     </form>
 
     <div class="personajes">
@@ -118,7 +119,7 @@
 </div>
 
 <script>
-
+// Función para agregar un personaje
 async function agregarPersonaje() {
     const nombre = document.getElementById('nombre').value;
     const anime = document.getElementById('anime').value;
@@ -135,7 +136,7 @@ async function agregarPersonaje() {
     formData.append('archivo', archivo);
 
     try {
-        const response = await fetch('http://localhost:8080/formulario', {
+        const response = await fetch('http://localhost:8081/formulario', {
             method: 'POST',
             body: formData,
         });
@@ -156,7 +157,7 @@ async function agregarPersonaje() {
 // Función para cargar todos los personajes
 async function cargarPersonajes() {
     try {
-        const response = await fetch('http://localhost:8080/personajes');
+        const response = await fetch('http://localhost:8081/personajes');
         const personajes = await response.json();
         const grid = document.getElementById('personajesGrid');
         grid.innerHTML = ''; // Limpiar el grid antes de agregar los personajes
@@ -166,7 +167,9 @@ async function cargarPersonajes() {
             div.classList.add('personaje');
 
             const img = document.createElement('img');
-            img.src = personaje.archivo;
+            // Asumimos que las imágenes están almacenadas en la carpeta "archivos"
+            //img.src = 'http://localhost:8081/' + personaje.archivo; 
+            img.src = personaje.archivo; 
             div.appendChild(img);
 
             const nombre = document.createElement('h3');
@@ -187,6 +190,9 @@ async function cargarPersonajes() {
             buttonDelete.onclick = () => eliminarPersonaje(personaje.nombre);
             div.appendChild(buttonDelete);
 
+
+            
+
             grid.appendChild(div);
         });
     } catch (error) {
@@ -197,7 +203,7 @@ async function cargarPersonajes() {
 // Función para eliminar un personaje
 async function eliminarPersonaje(nombre) {
     try {
-        const response = await fetch(`http://localhost:8080/eliminar?nombre=${nombre}`, {
+        const response = await fetch(`http://localhost:8081/eliminar?nombre=${nombre}`, {
             method: 'DELETE',
         });
 
@@ -216,7 +222,9 @@ async function eliminarPersonaje(nombre) {
 // Función para generar el PDF
 async function generarPDF(nombre) {
     try {
-        const response = await fetch(`http://localhost:8080/consulta-pdf?nombre=${nombre}`);
+        const response = await fetch(`http://localhost:8081/consulta-pdf?nombre=${nombre}`, {
+            method: 'GET',
+        });
 
         if (response.ok) {
             const blob = await response.blob();
@@ -233,10 +241,44 @@ async function generarPDF(nombre) {
     }
 }
 
+
+
+function cargarPersonaje(nombre) {
+    fetch(`http://localhost:8081/personajes/${nombre}`)
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('nombre').value = data.nombre;
+            document.getElementById('anime').value = data.anime;
+            // Si hay un archivo, mostrarlo de alguna forma, si es necesario
+        })
+        .catch(error => console.error('Error al cargar los datos:', error));
+}
+
+function actualizarPersonaje() {
+    const nombre = document.getElementById('nombre').value;
+    const anime = document.getElementById('anime').value;
+    const archivo = document.getElementById('archivo').files[0];
+
+    const formData = new FormData();
+    formData.append('nombre', nombre);
+    formData.append('anime', anime);
+    if (archivo) formData.append('archivo', archivo);
+
+    fetch('http://localhost:8081/actualizar-personaje', {
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => response.json())
+        .then(data => {
+            alert(data.mensaje);
+        })
+        .catch(error => console.error('Error al actualizar el personaje:', error));
+}
+
+
 // Cargar los personajes al inicio
 window.onload = cargarPersonajes;
 </script>
 
 </body>
 </html>
-
