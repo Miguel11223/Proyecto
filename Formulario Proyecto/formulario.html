@@ -143,7 +143,7 @@ async function agregarPersonaje() {
 
         if (response.ok) {
             alert('Personaje agregado correctamente.');
-            cargarPersonajes(); // Recargar la lista de personajes
+            cargarPersonajes(); 
         } else {
             const errorData = await response.json();
             alert(errorData.error || 'Error al agregar personaje.');
@@ -154,21 +154,18 @@ async function agregarPersonaje() {
     }
 }
 
-// Función para cargar todos los personajes
 async function cargarPersonajes() {
     try {
         const response = await fetch('http://localhost:8081/personajes');
         const personajes = await response.json();
         const grid = document.getElementById('personajesGrid');
-        grid.innerHTML = ''; // Limpiar el grid antes de agregar los personajes
-
+        grid.innerHTML = ''; 
         personajes.forEach(personaje => {
             const div = document.createElement('div');
             div.classList.add('personaje');
 
             const img = document.createElement('img');
-            // Asumimos que las imágenes están almacenadas en la carpeta "archivos"
-            //img.src = 'http://localhost:8081/' + personaje.archivo; 
+            
             img.src = personaje.archivo; 
             div.appendChild(img);
 
@@ -200,7 +197,6 @@ async function cargarPersonajes() {
     }
 }
 
-// Función para eliminar un personaje
 async function eliminarPersonaje(nombre) {
     try {
         const response = await fetch(`http://localhost:8081/eliminar?nombre=${nombre}`, {
@@ -209,7 +205,7 @@ async function eliminarPersonaje(nombre) {
 
         if (response.ok) {
             alert('Personaje eliminado correctamente.');
-            cargarPersonajes(); // Recargar la lista de personajes
+            cargarPersonajes(); 
         } else {
             const errorData = await response.json();
             alert(errorData.mensaje || 'Error al eliminar personaje.');
@@ -219,7 +215,6 @@ async function eliminarPersonaje(nombre) {
     }
 }
 
-// Función para generar el PDF
 async function generarPDF(nombre) {
     try {
         const response = await fetch(`http://localhost:8081/consulta-pdf?nombre=${nombre}`, {
@@ -249,7 +244,7 @@ function cargarPersonaje(nombre) {
         .then(data => {
             document.getElementById('nombre').value = data.nombre;
             document.getElementById('anime').value = data.anime;
-            // Si hay un archivo, mostrarlo de alguna forma, si es necesario
+            
         })
         .catch(error => console.error('Error al cargar los datos:', error));
 }
@@ -276,7 +271,6 @@ function actualizarPersonaje() {
 }
 
 
-// Cargar los personajes al inicio
 window.onload = cargarPersonajes;
 </script>
 
