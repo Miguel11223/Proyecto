@@ -9,7 +9,7 @@ const mysql = require('mysql2');
 
 const app = express();
 app.use(cors({
-    origin: 'https://frontend-4goj.onrender.com/formulario.html', 
+    origin: '*', 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],  
   allowedHeaders: ['Content-Type', 'Authorization'],
 }
