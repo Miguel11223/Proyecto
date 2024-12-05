@@ -296,6 +296,6 @@ app.post('/actualizar-personaje', upload.single('archivo'), (req, res) => {
 
 
 
-app.listen(8082, () => {
+app.listen(3306, () => {
     console.log('Servidor corriendo en puerto 8081');
 });
