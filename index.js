@@ -7,6 +7,7 @@ const { jsPDF } = require('jspdf');
 const { check, validationResult } = require('express-validator');
 const mysql = require('mysql2');
 
+const port = process.env.port || 8082
 const app = express();
 app.use(cors({
     origin: '*', 
@@ -65,7 +66,7 @@ const validateForm = [
     check('anime').notEmpty().withMessage('El anime es obligatorio.'),
 ];
 
-
+//ruta express static 
 
 
 app.post('/formulario', upload.single('archivo'), validateForm, (req, res) => {
@@ -296,6 +297,6 @@ app.post('/actualizar-personaje', upload.single('archivo'), (req, res) => {
 
 
 
-app.listen(3306, () => {
+app.listen(port, () => {
     console.log('Servidor corriendo en puerto 8081');
 });
