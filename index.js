@@ -9,13 +9,21 @@ const mysql = require('mysql2');
 
 const port = process.env.PORT || 8082
 const app = express();
-app.use(cors({
+/* app.use(cors({
     origin: ['https://frontend-4goj.onrender.com', 'https://proyecto-pg8i.onrender.com'], 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],  
   allowedHeaders: ['Content-Type', 'Authorization'],
-}
 
-));
+}
+)); */
+const corsOptions = {
+    origin: ['https://frontend-4goj.onrender.com', 'https://proyecto-pg8i.onrender.com'], 
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true, // Si necesitas que el navegador incluya cookies o encabezados de autenticación
+  };
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
