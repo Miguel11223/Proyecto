@@ -136,7 +136,7 @@ async function agregarPersonaje() {
     formData.append('archivo', archivo);
 
     try {
-        const response = await fetch('https://proyecto-pg8i.onrender.com/formulario', {
+        const response = await fetch('http://localhost:8082/formulario', {
             method: 'POST',
             body: formData,
         });
@@ -156,7 +156,7 @@ async function agregarPersonaje() {
 
 async function cargarPersonajes() {
     try {
-        const response = await fetch('https://proyecto-pg8i.onrender.com/personajes');
+        const response = await fetch('http://localhost:8082/personajes');
         const personajes = await response.json();
         const grid = document.getElementById('personajesGrid');
         grid.innerHTML = ''; 
@@ -199,7 +199,7 @@ async function cargarPersonajes() {
 
 async function eliminarPersonaje(nombre) {
     try {
-        const response = await fetch(`https://proyecto-pg8i.onrender.com/eliminar?nombre=${nombre}`, {
+        const response = await fetch(`http://localhost:8082/eliminar?nombre=${nombre}`, {
             method: 'DELETE',
         });
 
@@ -217,7 +217,7 @@ async function eliminarPersonaje(nombre) {
 
 async function generarPDF(nombre) {
     try {
-        const response = await fetch(`https://proyecto-pg8i.onrender.com/consulta-pdf?nombre=${nombre}`, {
+        const response = await fetch(`http://localhost:8082/consulta-pdf?nombre=${nombre}`, {
             method: 'GET',
         });
 
@@ -239,7 +239,7 @@ async function generarPDF(nombre) {
 
 
 function cargarPersonaje(nombre) {
-    fetch(`https://proyecto-pg8i.onrender.com/personajes/${nombre}`)
+    fetch(`http://localhost:8082/personajes/${nombre}`)
         .then(response => response.json())
         .then(data => {
             document.getElementById('nombre').value = data.nombre;
@@ -259,7 +259,7 @@ function actualizarPersonaje() {
     formData.append('anime', anime);
     if (archivo) formData.append('archivo', archivo);
 
-    fetch('https://proyecto-pg8i.onrender.com/actualizar-personaje', {
+    fetch('http://localhost:8082/actualizar-personaje', {
         method: 'POST',
         body: formData,
     })
