@@ -11,8 +11,6 @@ const port = process.env.PORT || 8082
 const app = express();
 app.use(cors({
     origin: ['https://frontend-4goj.onrender.com', 'https://proyecto-pg8i.onrender.com'], 
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],  
-  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
