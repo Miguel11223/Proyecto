@@ -71,7 +71,7 @@ const validateForm = [
 app.use(express.static(path.join(__dirname,'public')));
 app.get('/',(req,res,next)=>{
 
-    res.sendFile(path.join(__dirname,'public','Formulario.html' ))
+    res.sendFile(path.join(__dirname,'public','formulario.html' ))
 });
 
 
