@@ -118,7 +118,6 @@ app.get('/personajes', (req, res) => {
             
         }
         results.forEach(personaje => {
-            // Leer la imagen y convertirla en base64
             const imageData = fs.readFileSync(personaje.archivo, { encoding: 'base64' });
             const extname = path.extname(personaje.archivo).toLowerCase();
             let imageType = 'JPEG';
