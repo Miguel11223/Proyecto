@@ -68,6 +68,11 @@ const validateForm = [
 ];
 
 //ruta express static 
+app.use(express.static(path.join(__dirname,'public')));
+app.get('/',(req,res,next)=>{
+
+    res.sendFile(path.join(__dirname,'public','Formulario.html' ))
+});
 
 
 app.post('/formulario', upload.single('archivo'), validateForm, (req, res) => {
