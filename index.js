@@ -7,7 +7,7 @@ const { jsPDF } = require('jspdf');
 const { check, validationResult } = require('express-validator');
 const mysql = require('mysql2');
 
-const port = process.env.port || 8082
+const port = process.env.PORT || 8082
 const app = express();
 app.use(cors({
     origin: '*', 
@@ -20,11 +20,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 const db = mysql.createConnection({
-    host: 'junction.proxy.rlwy.net',
+    host: 'autorack.proxy.rlwy.net',
+    //mysql://root:ENPUJZNpIdcRRZkjwYLVNqRAmtqHlAmg@autorack.proxy.rlwy.net:31816/railway
     user: 'root',
-    password: 'GvpeoGkDtGbWGjDchFcwVzMFznHkSpvl',
+    password: 'ENPUJZNpIdcRRZkjwYLVNqRAmtqHlAmg',
     database: 'railway',
-    port: 16571,
+    port: 31816,
 
 });
 
