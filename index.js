@@ -10,7 +10,7 @@ const mysql = require('mysql2');
 const port = process.env.PORT || 8082
 const app = express();
 app.use(cors({
-    origin: 'https://frontend-4goj.onrender.com', 
+    origin: 'https://frontend-4goj.onrender.com/formulario.html', 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],  
   allowedHeaders: ['Content-Type', 'Authorization'],
 }
