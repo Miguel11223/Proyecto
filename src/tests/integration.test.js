@@ -6,7 +6,6 @@ const { testPool, setupTestDatabase, cleanupTestDatabase } = require('../config/
 
 const app = require('../../app');
 
-// Desactivar el servidor real
 let server;
 
 describe('Integration Tests', () => {
@@ -17,10 +16,8 @@ describe('Integration Tests', () => {
 
     beforeAll(async () => {
         await setupTestDatabase();
-        // Configurar datos de prueba
         const connection = await testPool.getConnection();
         
-        // Crear usuario de prueba
         const hashedPassword = await bcrypt.hash('password123', 10);
         const [userResult] = await connection.query(
             'INSERT INTO usuarios (username, password) VALUES (?, ?)',
@@ -28,14 +25,12 @@ describe('Integration Tests', () => {
         );
         testUserId = userResult.insertId;
         
-        // Crear alumno de prueba
         const [alumnoResult] = await connection.query(
             'INSERT INTO alumno (nombre, apellido, semestre, carrera) VALUES (?, ?, ?, ?)',
             ['Test', 'Alumno', '5', 'Ingeniería']
         );
         testAlumnoId = alumnoResult.insertId;
         
-        // Crear item de prueba
         const [itemResult] = await connection.query(
             'INSERT INTO inventario (nombre_item, cantidad_disponible) VALUES (?, ?)',
             ['Libro de Matemáticas', 10]
@@ -44,7 +39,6 @@ describe('Integration Tests', () => {
         
         connection.release();
         
-        // Generar token JWT
         authToken = jwt.sign(
             { id_usuario: testUserId, username: 'testuser' },
             process.env.JWT_SECRET,
