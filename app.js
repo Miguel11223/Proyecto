@@ -70,8 +70,8 @@ async function startServer() {
         await initializeDatabase();
         
         app.listen(PORT, () => {
-            console.log(`Servidor ejecutándose en http://localhost:${PORT}`);
-            console.log(`Documentación disponible en http://localhost:${PORT}/api-docs`);
+            console.log(`Servidor ejecutándose en https://proyecto-le7b.onrender.com:$`);
+            console.log(`Documentación disponible en https://proyecto-le7b.onrender.com/api-docs`);
         });
     } catch (error) {
         console.error('Error al iniciar el servidor:', error);
