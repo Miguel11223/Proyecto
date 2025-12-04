@@ -2,10 +2,10 @@
   "name": "escuela-api",
   "version": "1.0.0",
   "description": "API para sistema de gestión escolar",
-  "main": "src/app.js",
+  "main": "app.js",
   "scripts": {
-    "start": "node src/app.js",
-    "dev": "nodemon src/app.js",
+    "start": "node app.js",
+    "dev": "nodemon app.js",
     "test": "jest --testPathPattern=tests --detectOpenHandles",
     "test:unit": "jest --testPathPattern=tests/.*\\.test\\.js$",
     "test:integration": "jest --testPathPattern=tests/integration\\.test\\.js$",

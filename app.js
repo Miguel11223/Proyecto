@@ -4,17 +4,17 @@ const morgan = require('morgan');
 const swaggerUi = require('swagger-ui-express');
 require('dotenv').config();
 
-const { initializeDatabase } = require('./config/database');
+const { initializeDatabase } = require('./src/config/database');
 
-const { errorHandler } = require('./middlewares/errorHandler');
+const { errorHandler } = require('./src/middlewares/errorHandler');
 
-const authRoutes = require('./routes/authRoutes');
-const alumnoRoutes = require('./routes/alumnoRoutes');
-const inventarioRoutes = require('./routes/inventarioRoutes');
-const prestamoRoutes = require('./routes/prestamoRoutes');
-const usuarioRoutes = require('./routes/usuarioRoutes');
+const authRoutes = require('./src/routes/authRoutes');
+const alumnoRoutes = require('./src/routes/alumnoRoutes');
+const inventarioRoutes = require('./src/routes/inventarioRoutes');
+const prestamoRoutes = require('./src/routes/prestamoRoutes');
+const usuarioRoutes = require('./src/routes/usuarioRoutes');
 
-const swaggerSpecs = require('./docs/swagger');
+const swaggerSpecs = require('./src/docs/swagger');
 
 const app = express();
 
