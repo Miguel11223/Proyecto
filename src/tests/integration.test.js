@@ -4,8 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { testPool, setupTestDatabase, cleanupTestDatabase } = require('../config/database.test');
 
-// Importar la aplicación real
-const app = require('../app');
+const app = require('../../app');
 
 // Desactivar el servidor real
 let server;
