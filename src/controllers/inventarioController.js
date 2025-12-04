@@ -1,6 +1,5 @@
 const { pool } = require('../config/database');
 
-// Obtener todos los items del inventario
 exports.getAllItems = async (req, res) => {
     try {
         const [items] = await pool.execute(`
@@ -22,7 +21,6 @@ exports.getAllItems = async (req, res) => {
     }
 };
 
-// Obtener item por ID
 exports.getItemById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -52,7 +50,6 @@ exports.getItemById = async (req, res) => {
     }
 };
 
-// Crear nuevo item
 exports.createItem = async (req, res) => {
     try {
         const { 
@@ -61,7 +58,6 @@ exports.createItem = async (req, res) => {
             cantidad_disponible 
         } = req.body;
 
-        // Validar cantidad disponible
         if (cantidad_disponible < 0) {
             return res.status(400).json({
                 success: false,
@@ -90,7 +86,6 @@ exports.createItem = async (req, res) => {
     }
 };
 
-// Actualizar item
 exports.updateItem = async (req, res) => {
     try {
         const { id } = req.params;
@@ -99,8 +94,6 @@ exports.updateItem = async (req, res) => {
             description, 
             cantidad_disponible 
         } = req.body;
-
-        // Verificar si el item existe
         const [existing] = await pool.execute(
             'SELECT id_item FROM inventario WHERE id_item = ?',
             [id]
@@ -113,7 +106,6 @@ exports.updateItem = async (req, res) => {
             });
         }
 
-        // Validar cantidad disponible
         if (cantidad_disponible < 0) {
             return res.status(400).json({
                 success: false,
@@ -141,12 +133,10 @@ exports.updateItem = async (req, res) => {
     }
 };
 
-// Eliminar item
 exports.deleteItem = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Verificar si el item existe
         const [existing] = await pool.execute(
             'SELECT id_item FROM inventario WHERE id_item = ?',
             [id]
@@ -159,7 +149,6 @@ exports.deleteItem = async (req, res) => {
             });
         }
 
-        // Verificar si hay préstamos activos para este item
         const [prestamosActivos] = await pool.execute(
             'SELECT id_prestamo FROM prestamos WHERE id_item = ? AND estado = "activo"',
             [id]
@@ -190,7 +179,6 @@ exports.deleteItem = async (req, res) => {
     }
 };
 
-// Actualizar cantidad disponible
 exports.updateCantidad = async (req, res) => {
     try {
         const { id } = req.params;
@@ -210,7 +198,6 @@ exports.updateCantidad = async (req, res) => {
             });
         }
 
-        // Obtener cantidad actual
         const [items] = await pool.execute(
             'SELECT cantidad_disponible FROM inventario WHERE id_item = ?',
             [id]
@@ -257,7 +244,6 @@ exports.updateCantidad = async (req, res) => {
     }
 };
 
-// Buscar items
 exports.searchItems = async (req, res) => {
     try {
         const { query } = req.query;

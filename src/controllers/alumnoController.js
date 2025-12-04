@@ -1,6 +1,5 @@
 const { pool } = require('../config/database');
 
-// Obtener todos los alumnos
 exports.getAllAlumnos = async (req, res) => {
     try {
         const [alumnos] = await pool.execute(`
@@ -22,7 +21,6 @@ exports.getAllAlumnos = async (req, res) => {
     }
 };
 
-// Obtener alumno por ID
 exports.getAlumnoById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -52,7 +50,6 @@ exports.getAlumnoById = async (req, res) => {
     }
 };
 
-// Crear nuevo alumno
 exports.createAlumno = async (req, res) => {
     try {
         const { 
@@ -85,7 +82,6 @@ exports.createAlumno = async (req, res) => {
     }
 };
 
-// Actualizar alumno
 exports.updateAlumno = async (req, res) => {
     try {
         const { id } = req.params;
@@ -98,7 +94,6 @@ exports.updateAlumno = async (req, res) => {
             carrera 
         } = req.body;
 
-        // Verificar si el alumno existe
         const [existing] = await pool.execute(
             'SELECT id_alumno FROM alumno WHERE id_alumno = ?',
             [id]
@@ -132,12 +127,10 @@ exports.updateAlumno = async (req, res) => {
     }
 };
 
-// Eliminar alumno
 exports.deleteAlumno = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Verificar si el alumno existe
         const [existing] = await pool.execute(
             'SELECT id_alumno FROM alumno WHERE id_alumno = ?',
             [id]
@@ -162,7 +155,6 @@ exports.deleteAlumno = async (req, res) => {
     } catch (error) {
         console.error('Error al eliminar alumno:', error);
         
-        // Verificar si hay préstamos asociados
         if (error.code === 'ER_ROW_IS_REFERENCED_2') {
             return res.status(409).json({
                 success: false,
@@ -177,7 +169,6 @@ exports.deleteAlumno = async (req, res) => {
     }
 };
 
-// Buscar alumnos
 exports.searchAlumnos = async (req, res) => {
     try {
         const { query } = req.query;

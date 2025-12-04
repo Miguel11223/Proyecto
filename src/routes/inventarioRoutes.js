@@ -5,7 +5,6 @@ const { authenticateToken } = require('../middlewares/auth');
 const { validate } = require('../middlewares/validation');
 const { body } = require('express-validator');
 
-// Validaciones
 const itemValidation = [
     body('nombre_item').notEmpty().withMessage('El nombre del item es requerido'),
     body('cantidad_disponible')
@@ -18,7 +17,6 @@ const cantidadValidation = [
     body('cantidad').isInt({ min: 1 }).withMessage('La cantidad debe ser un número mayor a 0')
 ];
 
-// Todas las rutas requieren autenticación
 router.use(authenticateToken);
 
 /**

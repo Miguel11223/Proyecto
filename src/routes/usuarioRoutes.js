@@ -5,12 +5,10 @@ const { authenticateToken, isAdmin } = require('../middlewares/auth');
 const { validate } = require('../middlewares/validation');
 const { body } = require('express-validator');
 
-// Validaciones
 const usuarioValidation = [
     body('username').notEmpty().withMessage('El nombre de usuario es requerido')
 ];
 
-// Todas las rutas requieren autenticación
 router.use(authenticateToken);
 
 /**
@@ -55,7 +53,6 @@ router.get('/profile', (req, res) => {
     });
 });
 
-// Rutas protegidas (solo admin)
 router.use(isAdmin);
 
 /**

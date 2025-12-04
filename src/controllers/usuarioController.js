@@ -1,6 +1,5 @@
 const { pool } = require('../config/database');
 
-// Obtener todos los usuarios (solo admin)
 exports.getAllUsuarios = async (req, res) => {
     try {
         const [usuarios] = await pool.execute(`
@@ -23,7 +22,6 @@ exports.getAllUsuarios = async (req, res) => {
     }
 };
 
-// Obtener usuario por ID
 exports.getUsuarioById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -53,13 +51,11 @@ exports.getUsuarioById = async (req, res) => {
     }
 };
 
-// Actualizar usuario
 exports.updateUsuario = async (req, res) => {
     try {
         const { id } = req.params;
         const { username } = req.body;
 
-        // Verificar si el usuario existe
         const [existing] = await pool.execute(
             'SELECT id_usuario FROM usuarios WHERE id_usuario = ?',
             [id]
@@ -72,7 +68,6 @@ exports.updateUsuario = async (req, res) => {
             });
         }
 
-        // Verificar si el nuevo username ya existe
         if (username) {
             const [existingUsername] = await pool.execute(
                 'SELECT id_usuario FROM usuarios WHERE username = ? AND id_usuario != ?',
@@ -105,12 +100,10 @@ exports.updateUsuario = async (req, res) => {
     }
 };
 
-// Eliminar usuario
 exports.deleteUsuario = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // No permitir eliminar al usuario actual
         if (parseInt(id) === req.user.id_usuario) {
             return res.status(400).json({
                 success: false,
@@ -118,7 +111,6 @@ exports.deleteUsuario = async (req, res) => {
             });
         }
 
-        // Verificar si el usuario existe
         const [existing] = await pool.execute(
             'SELECT id_usuario FROM usuarios WHERE id_usuario = ?',
             [id]

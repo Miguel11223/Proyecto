@@ -6,7 +6,6 @@ exports.login = async (req, res) => {
     try {
         const { username, password } = req.body;
 
-        // Buscar usuario
         const [users] = await pool.execute(
             'SELECT * FROM usuarios WHERE username = ?',
             [username]
@@ -21,7 +20,6 @@ exports.login = async (req, res) => {
 
         const user = users[0];
 
-        // Verificar contraseña
         const validPassword = await bcrypt.compare(password, user.password);
         if (!validPassword) {
             return res.status(401).json({
@@ -30,7 +28,6 @@ exports.login = async (req, res) => {
             });
         }
 
-        // Generar token JWT
         const token = jwt.sign(
             { 
                 id_usuario: user.id_usuario, 
@@ -64,7 +61,6 @@ exports.register = async (req, res) => {
     try {
         const { username, password } = req.body;
 
-        // Verificar si el usuario ya existe
         const [existingUsers] = await pool.execute(
             'SELECT id_usuario FROM usuarios WHERE username = ?',
             [username]
@@ -77,10 +73,8 @@ exports.register = async (req, res) => {
             });
         }
 
-        // Encriptar contraseña
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Insertar nuevo usuario
         const [result] = await pool.execute(
             'INSERT INTO usuarios (username, password) VALUES (?, ?)',
             [username, hashedPassword]

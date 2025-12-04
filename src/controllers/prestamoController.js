@@ -1,6 +1,5 @@
 const { pool } = require('../config/database');
 
-// Obtener todos los préstamos
 exports.getAllPrestamos = async (req, res) => {
     try {
         const [prestamos] = await pool.execute(`
@@ -28,7 +27,6 @@ exports.getAllPrestamos = async (req, res) => {
     }
 };
 
-// Obtener préstamo por ID
 exports.getPrestamoById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -67,12 +65,10 @@ exports.getPrestamoById = async (req, res) => {
     }
 };
 
-// Crear nuevo préstamo
 exports.createPrestamo = async (req, res) => {
     try {
         const { id_alumno, id_item } = req.body;
 
-        // Verificar si el alumno existe
         const [alumno] = await pool.execute(
             'SELECT id_alumno FROM alumno WHERE id_alumno = ?',
             [id_alumno]
@@ -85,7 +81,6 @@ exports.createPrestamo = async (req, res) => {
             });
         }
 
-        // Verificar si el item existe y tiene disponibilidad
         const [item] = await pool.execute(
             'SELECT id_item, cantidad_disponible FROM inventario WHERE id_item = ?',
             [id_item]
@@ -105,14 +100,12 @@ exports.createPrestamo = async (req, res) => {
             });
         }
 
-        // Crear el préstamo
         const [result] = await pool.execute(
             `INSERT INTO prestamos (id_alumno, id_item, estado) 
             VALUES (?, ?, 'activo')`,
             [id_alumno, id_item]
         );
 
-        // Actualizar cantidad disponible del item
         await pool.execute(
             'UPDATE inventario SET cantidad_disponible = cantidad_disponible - 1 WHERE id_item = ?',
             [id_item]
@@ -132,12 +125,10 @@ exports.createPrestamo = async (req, res) => {
     }
 };
 
-// Devolver préstamo
 exports.devolverPrestamo = async (req, res) => {
     try {
         const { id } = req.params;
 
-        // Verificar si el préstamo existe y está activo
         const [prestamo] = await pool.execute(
             `SELECT p.*, i.id_item 
             FROM prestamos p
@@ -153,7 +144,6 @@ exports.devolverPrestamo = async (req, res) => {
             });
         }
 
-        // Actualizar préstamo
         await pool.execute(
             `UPDATE prestamos 
             SET estado = 'devuelto', fecha_devolucion = CURRENT_TIMESTAMP 
@@ -161,7 +151,6 @@ exports.devolverPrestamo = async (req, res) => {
             [id]
         );
 
-        // Actualizar cantidad disponible del item
         await pool.execute(
             'UPDATE inventario SET cantidad_disponible = cantidad_disponible + 1 WHERE id_item = ?',
             [prestamo[0].id_item]
@@ -180,7 +169,6 @@ exports.devolverPrestamo = async (req, res) => {
     }
 };
 
-// Obtener préstamos por alumno
 exports.getPrestamosByAlumno = async (req, res) => {
     try {
         const { id_alumno } = req.params;
@@ -208,7 +196,6 @@ exports.getPrestamosByAlumno = async (req, res) => {
     }
 };
 
-// Obtener préstamos por item
 exports.getPrestamosByItem = async (req, res) => {
     try {
         const { id_item } = req.params;
@@ -239,7 +226,6 @@ exports.getPrestamosByItem = async (req, res) => {
     }
 };
 
-// Obtener préstamos activos
 exports.getPrestamosActivos = async (req, res) => {
     try {
         const [prestamos] = await pool.execute(
@@ -268,7 +254,6 @@ exports.getPrestamosActivos = async (req, res) => {
     }
 };
 
-// Obtener estadísticas de préstamos
 exports.getEstadisticas = async (req, res) => {
     try {
         const [totalPrestamos] = await pool.execute(

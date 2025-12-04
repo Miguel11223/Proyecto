@@ -4,7 +4,6 @@ const authController = require('../controllers/authController');
 const { validate } = require('../middlewares/validation');
 const { body } = require('express-validator');
 
-// Validaciones
 const loginValidation = [
     body('username').notEmpty().withMessage('El usuario es requerido'),
     body('password').notEmpty().withMessage('La contraseña es requerida')

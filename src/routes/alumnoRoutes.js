@@ -5,7 +5,6 @@ const { authenticateToken } = require('../middlewares/auth');
 const { validate } = require('../middlewares/validation');
 const { body } = require('express-validator');
 
-// Validaciones
 const alumnoValidation = [
     body('nombre').notEmpty().withMessage('El nombre es requerido'),
     body('apellido').notEmpty().withMessage('El apellido es requerido'),
@@ -15,7 +14,6 @@ const alumnoValidation = [
     body('carrera').notEmpty().withMessage('La carrera es requerida')
 ];
 
-// Todas las rutas requieren autenticación
 router.use(authenticateToken);
 
 /**

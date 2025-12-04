@@ -5,13 +5,11 @@ const { authenticateToken } = require('../middlewares/auth');
 const { validate } = require('../middlewares/validation');
 const { body } = require('express-validator');
 
-// Validaciones
 const prestamoValidation = [
     body('id_alumno').isInt().withMessage('ID de alumno inválido'),
     body('id_item').isInt().withMessage('ID de item inválido')
 ];
 
-// Todas las rutas requieren autenticación
 router.use(authenticateToken);
 
 /**
