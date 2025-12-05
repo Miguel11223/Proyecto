@@ -18,7 +18,7 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:3000/api',
+                url: 'https://proyecto-le7b.onrender.com/api',
                 description: 'Servidor de desarrollo'
             }
         ],
