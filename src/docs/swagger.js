@@ -18,7 +18,7 @@ const options = {
         },
         servers: [
             {
-                url: 'https://proyecto-le7b.onrender.com/api',
+                url: 'https://proyecto-le7b.onrender.com',
                 description: 'Servidor de desarrollo'
             }
         ],
