@@ -44,7 +44,7 @@ const registerValidation = [
  *                 example: admin
  *               password:
  *                 type: string
- *                 example: password
+ *                 example: contrasena
  *     responses:
  *       200:
  *         description: Login exitoso
